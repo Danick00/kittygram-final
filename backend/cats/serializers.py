@@ -45,18 +45,27 @@ class CatSerializer(serializers.ModelSerializer):
     achievements = AchievementSerializer(required=False, many=True)
     color = Hex2NameColor()
     age = serializers.SerializerMethodField()
-    image = Base64ImageField(required=False, allow_null=True)
+    image = Base64ImageField(required=False, allow_null=True, write_only=True)
+    image_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Cat
         fields = (
             'id', 'name', 'color', 'birth_year', 'achievements', 'owner', 'age',
-            'image'
+            'image', 'image_url'
         )
-        read_only_fields = ('owner',)
+        read_only_fields = ('owner', 'image_url')
 
     def get_age(self, obj):
         return dt.datetime.now().year - obj.birth_year
+
+    def get_image_url(self, obj):
+        request = self.context.get('request')
+        if not obj.image:
+            return None
+        if request:
+            return request.build_absolute_uri(obj.image.url)
+        return obj.image.url
 
     def create(self, validated_data):
         if 'achievements' not in self.initial_data:
