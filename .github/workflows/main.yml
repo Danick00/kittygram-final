@@ -79,12 +79,6 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd kittygram/
-            # Записываем секреты в файл .env
-            echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" > .env
-            echo "DEBUG=${{ secrets.DEBUG }}" >> .env
-            echo "ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}" >> .env
-            echo "DOCKERHUB_USERNAME=${{ secrets.DOCKER_USERNAME }}" >> .env
-            # Теперь запускаем контейнеры
             sudo docker compose pull
             sudo docker compose down
             sudo docker compose up -d
