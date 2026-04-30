@@ -1,7 +1,6 @@
 volumes:
   pg_data:
-  backend_static:
-  frontend_static:
+  static:
   media:
 
 services:
@@ -17,7 +16,7 @@ services:
     env_file: .env
     restart: always
     volumes:
-      - backend_static:/app/static/
+      - static:/app/static/
       - media:/app/media/
     depends_on:
       - db
@@ -26,14 +25,13 @@ services:
     image: ${DOCKERHUB_USERNAME}/kittygram_frontend:latest
     restart: always
     volumes:
-      - frontend_static:/app/build/
+      - static:/app/build/
 
   gateway:
     image: ${DOCKERHUB_USERNAME}/kittygram_gateway:latest
     restart: always
     volumes:
-      - backend_static:/backend_static/
-      - frontend_static:/frontend_static/
+      - static:/staticfiles/
       - media:/media/
     ports:
       - "9000:80"
