@@ -17,11 +17,10 @@ services:
     env_file: .env
     restart: always
     volumes:
-      - backend_static:/backend_static/
+      - backend_static:/app/static/
       - media:/app/media/
     command: >
       sh -c "python manage.py collectstatic --noinput &&
-             cp -r /app/static/. /backend_static/ &&
              gunicorn --bind 0.0.0.0:8000 kittygram_backend.wsgi:application"
     depends_on:
       - db
@@ -30,9 +29,7 @@ services:
     image: ${DOCKERHUB_USERNAME}/kittygram_frontend:latest
     restart: always
     volumes:
-      - frontend_static:/frontend_static/
-    command: >
-      sh -c "cp -r /app/build/. /frontend_static/ && tail -f /dev/null"
+      - frontend_static:/app/build/
 
   gateway:
     image: ${DOCKERHUB_USERNAME}/kittygram_gateway:latest
