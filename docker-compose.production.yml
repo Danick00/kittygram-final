@@ -18,6 +18,9 @@ services:
     volumes:
       - static:/app/static/
       - media:/app/media/
+    command: >
+      sh -c "python manage.py collectstatic --noinput &&
+             gunicorn --bind 0.0.0.0:8000 kittygram_backend.wsgi:application"
     depends_on:
       - db
 
