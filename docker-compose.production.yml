@@ -1,6 +1,7 @@
 volumes:
   pg_data:
-  static:
+  backend_static:
+  frontend_static:
   media:
 
 services:
@@ -16,7 +17,7 @@ services:
     env_file: .env
     restart: always
     volumes:
-      - static:/app/static/
+      - backend_static:/app/static/
       - media:/app/media/
     command: >
       sh -c "python manage.py collectstatic --noinput &&
@@ -28,13 +29,14 @@ services:
     image: ${DOCKERHUB_USERNAME}/kittygram_frontend:latest
     restart: always
     volumes:
-      - static:/app/build/
+      - frontend_static:/app/build/
 
   gateway:
     image: ${DOCKERHUB_USERNAME}/kittygram_gateway:latest
     restart: always
     volumes:
-      - static:/staticfiles/
+      - backend_static:/backend_static/
+      - frontend_static:/frontend_static/
       - media:/media/
     ports:
       - "9000:80"
